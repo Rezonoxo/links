@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nozer | Cloud</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .card {
+            width: 85%;
+            max-width: 450px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+            will-change: transform;
+            transform: scale(0.9);
+            pointer-events: none; /* Początkowo wyłączone */
+        }
+
+        .card.active {
+            pointer-events: auto; /* Aktywowane po zamknięciu overlay */
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+            z-index: -1;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 30px rgba(0, 150, 255, 0.5);
+            transform: scale(0.92);
+        }
+
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            filter: grayscale(20%);
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.5);
+        }
+
+        .username {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+        }
+
+        .username::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+        }
+
+        .bio {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            text-align: center;
+            line-height: 1.5;
+            max-width: 80%;
+            font-weight: 300;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 400;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+
+        .link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transition: 0.6s;
+            z-index: -1;
+        }
+
+        .link:hover {
+            background: rgba(0, 150, 255, 0.15);
+            border-color: rgba(0, 150, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 150, 255, 0.3);
+        }
+
+        .link:hover::before {
+            left: 100%;
+        }
+
+        .link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: rgba(0, 150, 255, 0.2);
+            transition: height 0.3s ease;
+            z-index: -1;
+        }
+
+        .link:hover::after {
+            height: 100%;
+        }
+
+        .link i {
+            margin-right: 10px;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .link:hover i {
+            transform: scale(1.2);
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 11px;
+            margin-top: 15px;
+            font-weight: 300;
+        }
+
+        .gif-container {
+            width: 90%;
+            margin: 0 auto 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gif-container:hover {
+            transform: scale(1.02);
+        }
+
+        .gif-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .music-control {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            border: none;
+            color: white;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            background: rgba(0, 150, 255, 0.3);
+            transform: scale(1.15);
+        }
+
+        .autoplay-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .autoplay-content {
+            max-width: 400px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 150, 255, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .autoplay-button {
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: rgba(0, 150, 255, 0.7);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: auto;
+            margin-top: 10px;
+        }
+
+        .autoplay-button:hover {
+            background: rgba(0, 150, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 150, 255, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 90%;
+                padding: 20px 15px;
+                transform: scale(0.95);
+            }
+            
+            .autoplay-content {
+                width: 90%;
+                padding: 20px;
+            }
+            
+            .profile-img {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .username {
+                font-size: 18px;
+            }
+            
+            .bio {
+                font-size: 12px;
+            }
+            
+            .link {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .gif-container {
+                width: 95%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ================= KONFIGURACJA ================= -->
+    <script>
+        const config = {
+            profile: {
+                image: "https://i.pravatar.cc/150?img=5",
+                username: "@nozercode",
+                bio: "Digital creator • Futuristic designs • Web development"
+            },
+            
+            media: {
+                videoWithAudio: "video.mp4",  // Jeden plik wideo z dźwiękiem
+                gif: "https://i.giphy.com/media/26tn33aiTi1jkl6H6/giphy.webp"
+            },
+            
+            links: [
+                { icon: "youtube", url: "https://youtube.com", text: "YouTube" },
+                { icon: "github", url: "https://github.com", text: "GitHub" },
+                { icon: "tiktok", url: "https://tiktok.com", text: "TikTok" },
+                { icon: "paypal", url: "https://paypal.com", text: "Support" }
+            ],
+            
+            effects: {
+                cardTiltIntensity: 15,
+                cardScaleOnHover: 0.92,
+                glowIntensity: 0.4
+            }
+        };
+    </script>
+    <!-- ============== KONIEC KONFIGURACJI ============== -->
+
+    <video id="video-bg" autoplay muted loop playsinline>
+        <source src="" type="video/mp4">
+    </video>
+
+    <div class="autoplay-overlay" id="autoplayOverlay">
+        <div class="autoplay-content">
+            <h2>Informacja</h2>
+            <p>Strona zawiera błyski i muzykę</p>
+            <button class="autoplay-button" id="autoplayButton">
+                <i></i>Przejdź dalej
+            </button>
+        </div>
+    </div>
+
+    <div class="card" id="card">
+        <button class="music-control" id="musicControl">
+            <i class="fas fa-volume-mute"></i>
+        </button>
+
+        <div class="profile">
+            <img src="" alt="Profile" class="profile-img" id="profileImg">
+            <h1 class="username" id="username"></h1>
+            <p class="bio" id="bio"></p>
+        </div>
+
+        <div class="gif-container">
+            <img src="" alt="Tech GIF" id="gif">
+        </div>
+        
+        <div class="links" id="linksContainer"></div>
+        
+        <div class="footer">
+            © 2025 Nozer. All rights reserved.
+        </div>
+    </div>
+
+    <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-electronic-click-sci-fi-1129.mp3" preload="auto"></audio>
+
+    <script>
+        // ============== INICJALIZACJA ==============
+        const videoBg = document.getElementById('video-bg');
+        const musicControl = document.getElementById('musicControl');
+        const autoplayOverlay = document.getElementById('autoplayOverlay');
+        const autoplayButton = document.getElementById('autoplayButton');
+        const card = document.getElementById('card');
+        const profileImg = document.getElementById('profileImg');
+        const username = document.getElementById('username');
+        const bio = document.getElementById('bio');
+        const gif = document.getElementById('gif');
+        const linksContainer = document.getElementById('linksContainer');
+        const clickSound = document.getElementById('clickSound');
+        
+        // Ustawienia z konfiguracji
+        document.querySelector('source[type="video/mp4"]').src = config.media.videoWithAudio;
+        profileImg.src = config.profile.image;
+        username.textContent = config.profile.username;
+        bio.textContent = config.profile.bio;
+        gif.src = config.media.gif;
+        
+        // Generowanie linków
+        config.links.forEach(link => {
+            const linkElement = document.createElement('a');
+            linkElement.href = link.url;
+            linkElement.className = 'link';
+            linkElement.innerHTML = `<i class="fab fa-${link.icon}"></i> ${link.text}`;
+            linksContainer.appendChild(linkElement);
+        });
+        
+        let isMusicPlaying = false;
+        let isCardHovered = false;
+
+        // Funkcja do włączania/wyłączania dźwięku
+        function toggleSound() {
+            if (videoBg.muted) {
+                videoBg.muted = false;
+                musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+                isMusicPlaying = true;
+            } else {
+                videoBg.muted = true;
+                musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                isMusicPlaying = false;
+            }
+        }
+
+        // Funkcja aktywująca stronę
+        function activatePage() {
+            // Włącz dźwięk
+            toggleSound();
+            
+            // Ukryj overlay
+            autoplayOverlay.style.display = 'none';
+            
+            // Aktywuj interakcje z kartą
+            card.classList.add('active');
+            
+            // Odtwórz wideo
+            videoBg.play().catch(e => console.log("Playback error:", e));
+        }
+
+        // Obsługa przycisku w overlay
+        autoplayButton.addEventListener('click', activatePage);
+
+        // Obsługa przycisku kontroli dźwięku
+        musicControl.addEventListener('click', toggleSound);
+
+        // Inicjalizacja wideo (tylko obraz, bez dźwięku)
+        videoBg.muted = true;
+        videoBg.play().catch(e => {
+            console.log("Autoplay prevented, waiting for user interaction");
+        });
+
+        // Efekty 3D karty
+        card.addEventListener('mousemove', (e) => {
+            if (!isCardHovered) return;
+            
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const angleX = (centerY - y) / config.effects.cardTiltIntensity;
+            const angleY = (x - centerX) / config.effects.cardTiltIntensity;
+            
+            card.style.transform = `
+                perspective(1000px) 
+                rotateX(${angleX}deg) 
+                rotateY(${angleY}deg)
+                scale(${config.effects.cardScaleOnHover})
+            `;
+            
+            card.style.boxShadow = `
+                ${(centerX - x) / 30}px ${(centerY - y) / 30}px 30px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(0, 150, 255, ${config.effects.glowIntensity})
+            `;
+        });
+
+        card.addEventListener('mouseenter', () => {
+            isCardHovered = true;
+            card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+        });
+
+        card.addEventListener('mouseleave', () => {
+            isCardHovered = false;
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(0.9)';
+            card.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+            card.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
+        });
+
+        // Efekty kliknięcia linków
+        document.querySelectorAll('.link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                clickSound.currentTime = 0;
+                clickSound.play();
+                
+                link.style.transform = 'translateY(-3px) scale(0.98)';
+                setTimeout(() => {
+                    link.style.transform = 'translateY(0) scale(1)';
+                    window.location.href = link.href;
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
