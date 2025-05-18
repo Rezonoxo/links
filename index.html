@@ -372,7 +372,7 @@
             .card {
                 width: 90%;
                 padding: 20px 15px;
-                transform: scale(0.7);
+                transform: scale(0.8);
             }
             
             .autoplay-content {
@@ -416,7 +416,7 @@
             flex: 1 1 100%; /* This makes the link take the full width */
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -431,18 +431,19 @@
             
             media: {
                 videoWithAudio: "video.mp4",
+                audio: "np.mp4",
                 gif: "nzr.gif"
             },
             
             links: [
-                { icon: "youtube", url: "https://youtube.com", text: "YouTube" },
-                { icon: "github", url: "https://github.com", text: "GitHub", class: "full-width" },
-                { icon: "tiktok", url: "https://tiktok.com", text: "TikTok" },
-                { icon: "paypal", url: "https://paypal.com", text: "Support" },
-                { icon: "instagram", url: "https://instagram.com", text: "Instagram" },
-                { icon: "twitter", url: "https://twitter.com", text: "Twitter" },
-                { icon: "discord", url: "https://discord.com", text: "Discord" },
-                { icon: "linkedin", url: "https://linkedin.com", text: "LinkedIn" }
+                { icon: "fas fa-globe", url: "https://rezonoxo.github.io/nozercode", text: "Nozercode" },
+                { icon: "fab fa-discord", url: "https://dsc.gg/nozercode", text: "Discord", class: "full-width" },
+                { icon: "fab fa-tiktok", url: "https://www.tiktok.com/@nozercode", text: "TikTok" },
+                { icon: "fab fa-paypal", url: "https://www.paypal.com/paypalme/rezonoxo", text: "PayPal" },
+                { icon: "fab fa-youtube", url: "https://www.youtube.com/@nozercode", text: "YouTube" },
+                { icon: "fab fa-behance", url: "https://www.behance.net/nozercode", text: "Behance" },
+                { icon: "fas fa-cube", url: "https://modrinth.com/user/nozercode", text: "Modrinth" },
+                { icon: "fab fa-github", url: "https://github.com/rezonoxo", text: "GitHub" }
             ],
             
             effects: {
@@ -507,7 +508,6 @@
         const clickSound = document.getElementById('clickSound');
         
         // Ustawienia z konfiguracji
-        document.querySelector('source[type="video/mp4"]').src = config.media.videoWithAudio;
         profileImg.src = config.profile.image;
         username.textContent = config.profile.username;
         bio.textContent = config.profile.bio;
@@ -518,7 +518,7 @@
             const linkElement = document.createElement('a');
             linkElement.href = link.url;
             linkElement.className = `link ${link.class ? link.class : ''}`;
-            linkElement.innerHTML = `<i class="fab fa-${link.icon}"></i> ${link.text}`;
+            linkElement.innerHTML = `<i class="${link.icon}"></i> ${link.text}`;
             linkElement.target = "_blank"; // Otwiera w nowej karcie
             linkElement.rel = "noopener noreferrer";
             linksContainer.appendChild(linkElement);
@@ -527,14 +527,21 @@
         let isMusicPlaying = false;
         let isCardHovered = false;
 
+        // Nowa funkcja do odtwarzania dźwięku
+        const audio = new Audio(config.media.audio); // Create a new audio object
+        audio.preload = 'auto'; // Preload the audio
+        audio.loop = true; // Set audio to loop
+
         // Funkcja do włączania/wyłączania dźwięku
         function toggleSound() {
-            if (videoBg.muted) {
-                videoBg.muted = false;
+            if (audio.paused) {
+                // Synchronize audio with video when unmuting
+                audio.currentTime = videoBg.currentTime; // Set audio time to video time
+                audio.play(); // Play the audio
                 musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
                 isMusicPlaying = true;
             } else {
-                videoBg.muted = true;
+                audio.pause(); // Pause the audio
                 musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
                 isMusicPlaying = false;
             }
@@ -542,6 +549,9 @@
 
         // Funkcja aktywująca stronę
         function activatePage() {
+            // Ustaw źródło wideo po kliknięciu
+            document.querySelector('source[type="video/mp4"]').src = config.media.videoWithAudio;
+            
             // Włącz dźwięk
             toggleSound();
             
@@ -558,7 +568,9 @@
             card.classList.add('active');
             
             // Odtwórz wideo
+            videoBg.load(); // Load the video after setting the source
             videoBg.play().catch(e => console.log("Playback error:", e));
+            audio.play().catch(e => console.log("Audio playback error:", e)); // Play audio
         }
 
         // Obsługa przycisku w overlay
@@ -573,6 +585,17 @@
             clickSound.currentTime = 0;
             clickSound.play();
             toggleSound();
+        });
+
+        // Synchronizacja odtwarzania
+        videoBg.addEventListener('ended', () => {
+            videoBg.currentTime = 0; // Reset video to start
+            videoBg.play(); // Replay video
+        });
+
+        audio.addEventListener('ended', () => {
+            audio.currentTime = 0; // Reset audio to start
+            audio.play(); // Replay audio
         });
 
         // Inicjalizacja wideo (tylko obraz, bez dźwięku)
