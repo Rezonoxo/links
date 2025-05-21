@@ -4,435 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nozer | Links</title>
-    <style>
-        :root {
-            --background-color: #121212; /* Dark background */
-            --text-color: #e0e0e0; /* Light text color */
-            --card-background: rgba(30, 30, 30, 0.2); /* Darker card background */
-            --link-background: rgba(255, 255, 255, 0.1); /* Light link background */
-            --link-color: #bbdefb; /* Light blue text for links */
-            --link-hover-background: rgba(0, 150, 255, 0.3); /* Softer blue on hover */
-            --link-hover-border: rgba(0, 150, 255, 0.5); /* Softer blue border on hover */
-            --button-background: linear-gradient(135deg, rgba(0, 150, 255, 0.8) 0%, rgba(0, 80, 200, 0.8) 100%); /* Blue gradient */
-            --footer-color: rgba(187, 222, 251, 0.5); /* Light blue footer text */
-            --header-color: #bbdefb; /* Light blue for header */
-            --shadow-color: rgba(0, 150, 255, 0.5); /* Blue shadow */
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            overflow: hidden;
-            position: relative;
-        }
-
-        #video-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
-        .card {
-            width: 85%;
-            max-width: 450px;
-            padding: 25px;
-            background: var(--card-background);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform-style: preserve-3d;
-            transition: transform 0.5s ease, box-shadow 0.5s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 10;
-            will-change: transform;
-            transform: scale(0.8);
-            pointer-events: none;
-        }
-
-        .card.active {
-            pointer-events: auto;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
-            z-index: -1;
-        }
-
-        .card:hover {
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2); /* Light shadow on hover */
-            transform: scale(0.8);
-        }
-
-        .profile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .profile-img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            filter: grayscale(20%);
-        }
-
-        .profile-img:hover {
-            transform: scale(1.05);
-            filter: grayscale(0%);
-            box-shadow: 0 0 20px rgba(	187, 222, 251, 0.5);
-        }
-
-        .username {
-            color: #fff;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            text-align: center;
-            position: relative;
-            display: inline-block;
-        }
-
-        .username::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-        }
-
-        .bio {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 13px;
-            text-align: center;
-            line-height: 1.5;
-            max-width: 80%;
-            font-weight: 300;
-        }
-
-        .links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .link {
-            flex: 1 1 45%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 18px;
-            background: var(--link-background);
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Neutral border */
-            border-radius: 8px;
-            color: var(--link-color); /* White text */
-            text-decoration: none;
-            font-weight: 400;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            z-index: 1;
-        }
-
-        .link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            transition: 0.6s;
-            z-index: -1;
-        }
-
-        .link:hover {
-            background: rgba(255, 255, 255, 0.2); /* Neutral background on hover */
-            border-color: rgba(255, 255, 255, 0.3); /* Neutral border on hover */
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Light shadow on hover */
-        }
-
-        .link:hover::before {
-            left: 100%;
-        }
-
-        .link::after {
-            content: ''; /* Remove blue background effect */
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 0;
-            background: transparent; /* No background */
-            transition: height 0.3s ease;
-            z-index: -1;
-        }
-
-        .link:hover::after {
-            height: 100%;
-        }
-
-        .link i {
-            margin-right: 10px;
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
-
-        .link:hover i {
-            transform: scale(1.2);
-        }
-
-        .footer {
-            text-align: center;
-            color: var(--footer-color);
-            font-size: 11px;
-            margin-top: 15px;
-            font-weight: 300;
-        }
-
-        .gif-container {
-            width: 90%;
-            margin: 0 auto 20px;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .gif-container:hover {
-            transform: scale(1.02);
-        }
-
-        .gif-container img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .music-control {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 28px;
-            height: 28px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            border: none;
-            color: white;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-
-        .music-control:hover {
-            background: rgba(0, 150, 255, 0.3);
-            transform: scale(1.15);
-        }
-
-        .autoplay-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .autoplay-content {
-            max-width: 400px;
-            padding: 40px;
-            background: rgba(30, 30, 30, 0.9); /* Dark background for content */
-            border-radius: 16px;
-            border: 1px solid rgba(0, 150, 255, 0.5);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transform-style: preserve-3d;
-            perspective: 1000px;
-            color: var(--text-color); /* White text */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .autoplay-content h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: var(--header-color);
-            text-shadow: 0 0 10px var(--shadow-color);
-            position: relative;
-        }
-
-        .autoplay-content h2::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(0, 150, 255, 0.8), transparent);
-        }
-
-        .autoplay-content p {
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .autoplay-button {
-            margin-top: 25px;
-            padding: 14px 32px;
-            background: var(--button-background); /* Black */
-            border: none;
-            border-radius: 50px;
-            color: white; /* White text */
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(0, 150, 255, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .autoplay-button:hover {
-            background: rgba(0, 0, 0, 0.8); /* Dark background on hover */
-            color: white; /* Keep text white */
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 150, 255, 0.4);
-        }
-
-        .autoplay-button:active {
-            transform: translateY(1px);
-        }
-
-        @media (max-width: 480px) {
-            .card {
-                width: 90%;
-                padding: 20px 15px;
-                transform: scale(0.8);
-            }
-            
-            .autoplay-content {
-                width: 90%;
-                padding: 25px;
-            }
-            
-            .profile-img {
-                width: 80px;
-                height: 80px;
-            }
-            
-            .username {
-                font-size: 18px;
-            }
-            
-            .bio {
-                font-size: 12px;
-            }
-            
-            .link {
-                padding: 10px 15px;
-                font-size: 13px;
-            }
-
-            .gif-container {
-                width: 95%;
-            }
-            
-            .autoplay-content h2 {
-                font-size: 20px;
-            }
-            
-            .autoplay-button {
-                padding: 12px 25px;
-                font-size: 14px;
-            }
-        }
-
-        .link.full-width {
-            flex: 1 1 100%; /* This makes the link take the full width */
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- ================= KONFIGURACJA ================= -->
-    <script>
+    <!-- ================= KONFIGURACJA ================= -->    <script>
         const config = {
             profile: {
                 image: "nozer_pfp.png",
                 username: "@nozercode",
-                bio: "Graphics Designer • Content Creator • Web Developer"
+                bio: "Graphics Designer • Content Creator • Web Developer",
+                copyright: "© 2025 Nozer. All rights reserved."
             },
             
             media: {
                 videoWithAudio: "video.mp4",
                 audio: "np.mp4",
-                gif: "nzr.gif"
+                gif: "nzr.gif",
+                clickSound: "click.wav"
+            },
+            
+            ui: {
+                overlay: {
+                    title: "UWAGA",
+                    message: "Ta strona zawiera efekty wizualne i dźwiękowe. Kliknij poniższy przycisk, aby przejść dalej.",
+                    buttonText: "ROZPOCZNIJ"
+                },
+                cursor: {
+                    enabled: true,
+                    minWidth: 768, // Minimalna szerokość ekranu dla własnego kursora
+                    dotSize: 4,
+                    outlineSize: 25
+                }
             },
             
             links: [
@@ -449,7 +52,13 @@
             effects: {
                 cardTiltIntensity: 40,
                 cardScaleOnHover: 1,
-                glowIntensity: 1
+                glowIntensity: 1,
+                videoOpacity: 0.3,
+                transitionSpeed: {
+                    fast: '0.3s',
+                    normal: '0.5s',
+                    slow: '0.6s'
+                }
             }
         };
     </script>
@@ -467,7 +76,8 @@
                 <i class="fas fa-arrow-right"></i> ROZPOCZNIJ
             </button>
         </div>
-    </div>
+    </div>    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <div class="card" id="card">
         <button class="music-control" id="musicControl">
@@ -493,171 +103,6 @@
 
     <audio id="clickSound" src="click.wav" preload="auto"></audio>
 
-    <script>
-        // ============== INICJALIZACJA ==============
-        const videoBg = document.getElementById('video-bg');
-        const musicControl = document.getElementById('musicControl');
-        const autoplayOverlay = document.getElementById('autoplayOverlay');
-        const autoplayButton = document.getElementById('autoplayButton');
-        const card = document.getElementById('card');
-        const profileImg = document.getElementById('profileImg');
-        const username = document.getElementById('username');
-        const bio = document.getElementById('bio');
-        const gif = document.getElementById('gif');
-        const linksContainer = document.getElementById('linksContainer');
-        const clickSound = document.getElementById('clickSound');
-        
-        // Ustawienia z konfiguracji
-        profileImg.src = config.profile.image;
-        username.textContent = config.profile.username;
-        bio.textContent = config.profile.bio;
-        gif.src = config.media.gif;
-        
-        // Generowanie linków (otwierających się w nowej karcie)
-        config.links.forEach(link => {
-            const linkElement = document.createElement('a');
-            linkElement.href = link.url;
-            linkElement.className = `link ${link.class ? link.class : ''}`;
-            linkElement.innerHTML = `<i class="${link.icon}"></i> ${link.text}`;
-            linkElement.target = "_blank"; // Otwiera w nowej karcie
-            linkElement.rel = "noopener noreferrer";
-            linksContainer.appendChild(linkElement);
-        });
-        
-        let isMusicPlaying = false;
-        let isCardHovered = false;
-
-        // Nowa funkcja do odtwarzania dźwięku
-        const audio = new Audio(config.media.audio); // Create a new audio object
-        audio.preload = 'auto'; // Preload the audio
-        audio.loop = true; // Set audio to loop
-
-        // Funkcja do włączania/wyłączania dźwięku
-        function toggleSound() {
-            if (audio.paused) {
-                // Synchronize audio with video when unmuting
-                audio.currentTime = videoBg.currentTime; // Set audio time to video time
-                audio.play(); // Play the audio
-                musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
-                isMusicPlaying = true;
-            } else {
-                audio.pause(); // Pause the audio
-                musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                isMusicPlaying = false;
-            }
-        }
-
-        // Funkcja aktywująca stronę
-        function activatePage() {
-            // Ustaw źródło wideo po kliknięciu
-            document.querySelector('source[type="video/mp4"]').src = config.media.videoWithAudio;
-            
-            // Włącz dźwięk
-            toggleSound();
-            
-            // Ukryj overlay z animacją
-            autoplayOverlay.style.opacity = '0';
-            autoplayOverlay.style.transition = 'opacity 0.5s ease';
-            
-            // Po zakończeniu animacji ukryj overlay
-            setTimeout(() => {
-                autoplayOverlay.style.display = 'none';
-            }, 500);
-            
-            // Aktywuj interakcje z kartą
-            card.classList.add('active');
-            
-            // Odtwórz wideo
-            videoBg.load(); // Load the video after setting the source
-            videoBg.play().catch(e => console.log("Playback error:", e));
-            audio.play().catch(e => console.log("Audio playback error:", e)); // Play audio
-        }
-
-        // Obsługa przycisku w overlay
-        autoplayButton.addEventListener('click', function() {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            activatePage();
-        });
-
-        // Obsługa przycisku kontroli dźwięku
-        musicControl.addEventListener('click', function() {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            toggleSound();
-        });
-
-        // Synchronizacja odtwarzania
-        videoBg.addEventListener('ended', () => {
-            videoBg.currentTime = 0; // Reset video to start
-            videoBg.play(); // Replay video
-        });
-
-        audio.addEventListener('ended', () => {
-            audio.currentTime = 0; // Reset audio to start
-            audio.play(); // Replay audio
-        });
-
-        // Inicjalizacja wideo (tylko obraz, bez dźwięku)
-        videoBg.muted = true;
-        videoBg.play().catch(e => {
-            console.log("Autoplay prevented, waiting for user interaction");
-        });
-
-        // Efekty 3D karty
-        card.addEventListener('mousemove', (e) => {
-            if (!isCardHovered) return;
-            
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const angleX = (centerY - y) / config.effects.cardTiltIntensity;
-            const angleY = (x - centerX) / config.effects.cardTiltIntensity;
-            
-            card.style.transform = `
-                perspective(1000px) 
-                rotateX(${angleX}deg) 
-                rotateY(${angleY}deg)
-                scale(${config.effects.cardScaleOnHover})
-            `;
-            
-            card.style.boxShadow = `
-                ${(centerX - x) / 30}px ${(centerY - y) / 30}px 30px rgba(0, 0, 0, 0.4),
-                0 0 30px rgba(50, 50, 100, ${config.effects.glowIntensity})
-            `;
-        });
-
-        card.addEventListener('mouseenter', () => {
-            isCardHovered = true;
-            card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
-        });
-
-        card.addEventListener('mouseleave', () => {
-            isCardHovered = false;
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(0.8)';
-            card.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
-            card.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
-        });
-
-        // Efekty kliknięcia linków
-        document.querySelectorAll('.link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                clickSound.currentTime = 0;
-                clickSound.play();
-                
-                link.style.transform = 'translateY(-3px) scale(0.98)';
-                setTimeout(() => {
-                    link.style.transform = 'translateY(0) scale(1)';
-                    // Otwiera link w nowej karcie (już ustawione przez target="_blank")
-                    window.open(link.href, '_blank');
-                }, 300);
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
