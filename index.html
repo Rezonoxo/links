@@ -68,16 +68,20 @@
         <source src="" type="video/mp4">
     </video>
 
-    <div class="autoplay-overlay" id="autoplayOverlay">
-        <div class="autoplay-content">
-            <h2>UWAGA</h2>
-            <p>Ta strona zawiera efekty wizualne i dźwiękowe. Kliknij poniższy przycisk, aby przejść dalej.</p>
-            <button class="autoplay-button" id="autoplayButton">
-                <i class="fas fa-arrow-right"></i> ROZPOCZNIJ
-            </button>
-        </div>
-    </div>    <div class="cursor-dot"></div>
+    <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader-content">
+            <div class="loader-circle"></div>
+            <div class="loader-logo">NOZER</div>
+            <div class="loader-progress">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="loader-text">Loading experience...</div>
+        </div>
+    </div>
 
     <div class="card" id="card">
         <button class="music-control" id="musicControl">

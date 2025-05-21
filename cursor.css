@@ -1,0 +1,42 @@
+/* Custom cursor styles */
+@media (min-width: 769px) {
+    body {
+        cursor: none !important;
+    }
+
+    .cursor-dot,
+    .cursor-outline {
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        will-change: transform;
+    }
+
+    .cursor-dot {
+        width: var(--cursor-dot-size, 4px);
+        height: var(--cursor-dot-size, 4px);
+        background-color: var(--accent-color);
+        opacity: 0.8;
+        transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .cursor-outline {
+        width: var(--cursor-outline-size, 25px);
+        height: var(--cursor-outline-size, 25px);
+        border: 1px solid var(--accent-color);
+        opacity: 0.4;
+        transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* Ensure interactive elements don't show default cursor */
+    .link, 
+    .music-control, 
+    .profile-img, 
+    button {
+        cursor: none !important;
+    }
+}

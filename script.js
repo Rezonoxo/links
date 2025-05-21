@@ -1,8 +1,6 @@
-        // ============== INICJALIZACJA ==============
+// ============== INICJALIZACJA ==============
         const videoBg = document.getElementById('video-bg');
         const musicControl = document.getElementById('musicControl');
-        const autoplayOverlay = document.getElementById('autoplayOverlay');
-        const autoplayButton = document.getElementById('autoplayButton');
         const card = document.getElementById('card');
         const profileImg = document.getElementById('profileImg');
         const username = document.getElementById('username');
@@ -10,6 +8,8 @@
         const gif = document.getElementById('gif');
         const linksContainer = document.getElementById('linksContainer');
         const clickSound = document.getElementById('clickSound');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.querySelector('.progress-bar');
         
         // Ustawienia z konfiguracji
         profileImg.src = config.profile.image;
@@ -30,14 +30,12 @@
         
         let isMusicPlaying = false;
         let isCardHovered = false;
+        const audio = new Audio(config.media.audio);
+        audio.preload = 'auto';
+        audio.loop = true;
 
-        // Nowa funkcja do odtwarzania dźwięku
-        const audio = new Audio(config.media.audio); // Create a new audio object
-        audio.preload = 'auto'; // Preload the audio
-        audio.loop = true; // Set audio to loop        // Funkcja do włączania/wyłączania dźwięku
         function toggleSound() {
             if (audio.paused) {
-                // Synchronize audio with video when unmuting
                 audio.currentTime = videoBg.currentTime % audio.duration;
                 audio.play().then(() => {
                     musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
@@ -50,44 +48,42 @@
             }
         }
 
-        // Synchronizacja audio przy wznowieniu widoczności strony
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && isMusicPlaying) {
                 audio.currentTime = videoBg.currentTime % audio.duration;
             }
         });
 
-        // Funkcja aktywująca stronę
         function activatePage() {
-            // Ustaw źródło wideo po kliknięciu
             document.querySelector('source[type="video/mp4"]').src = config.media.videoWithAudio;
-            
-            // Włącz dźwięk
-            toggleSound();
-            
-            // Ukryj overlay z animacją
-            autoplayOverlay.style.opacity = '0';
-            autoplayOverlay.style.transition = 'opacity 0.5s ease';
-            
-            // Po zakończeniu animacji ukryj overlay
-            setTimeout(() => {
-                autoplayOverlay.style.display = 'none';
-            }, 500);
-            
-            // Aktywuj interakcje z kartą
-            card.classList.add('active');
-            
-            // Odtwórz wideo
-            videoBg.load(); // Load the video after setting the source
+            videoBg.load();
             videoBg.play().catch(e => console.log("Playback error:", e));
-            audio.play().catch(e => console.log("Audio playback error:", e)); // Play audio
+            toggleSound();
+            card.classList.add('active');
         }
 
-        // Obsługa przycisku w overlay
-        autoplayButton.addEventListener('click', function() {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            activatePage();
+        // Loading screen logic
+        function simulateLoading() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = `${progress}%`;
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingScreen.style.animation = 'fadeOut 0.5s forwards';
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                            activatePage();
+                        }, 500);
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        window.addEventListener('load', () => {
+            simulateLoading();
         });
 
         // Obsługa przycisku kontroli dźwięku
