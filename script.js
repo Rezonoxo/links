@@ -30,35 +30,31 @@
         
         let isMusicPlaying = false;
         let isCardHovered = false;
-        const audio = new Audio(config.media.audio);
-        audio.preload = 'auto';
-        audio.loop = true;
 
         function toggleSound() {
-            if (audio.paused) {
-                audio.currentTime = videoBg.currentTime % audio.duration;
-                audio.play().then(() => {
-                    musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    isMusicPlaying = true;
-                }).catch(e => console.log("Audio play error:", e));
+            if (videoBg.muted) {
+                videoBg.muted = false;
+                musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
             } else {
-                audio.pause();
+                videoBg.muted = true;
                 musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                isMusicPlaying = false;
             }
         }
 
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && isMusicPlaying) {
-                audio.currentTime = videoBg.currentTime % audio.duration;
-            }
-        });
+        // Funkcja losująca film
+        function getRandomVideo() {
+            const videos = config.media.videos;
+            return videos[Math.floor(Math.random() * videos.length)];
+        }
 
         function activatePage() {
-            document.querySelector('source[type="video/mp4"]').src = config.media.videoWithAudio;
+            // Losuj film i ustaw jako źródło
+            const randomVideo = getRandomVideo();
+            document.querySelector('source[type="video/mp4"]').src = randomVideo;
             videoBg.load();
+            videoBg.muted = false;
             videoBg.play().catch(e => console.log("Playback error:", e));
-            toggleSound();
+            musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
             card.classList.add('active');
         }
 
@@ -97,11 +93,6 @@
         videoBg.addEventListener('ended', () => {
             videoBg.currentTime = 0; // Reset video to start
             videoBg.play(); // Replay video
-        });
-
-        audio.addEventListener('ended', () => {
-            audio.currentTime = 0; // Reset audio to start
-            audio.play(); // Replay audio
         });
 
         // Inicjalizacja wideo (tylko obraz, bez dźwięku)
