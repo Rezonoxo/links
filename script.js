@@ -234,17 +234,13 @@ if (window.innerWidth > 768) {
     });
 }
 
-// Pobierz i wyświetl licznik odwiedzin (visitorbadge.io)
+// Pobierz i wyświetl licznik odwiedzin (visits.deno.dev)
 function updateVisitCounter() {
-  fetch('https://api.visitorbadge.io/api/visitors?path=nozercode-links', {
-    headers: {
-      'Accept': 'application/json'
-    }
-  })
+  fetch('https://visits.deno.dev/nozercode-links')
     .then(res => res.json())
     .then(data => {
-      if (data && typeof data.count !== 'undefined') {
-        document.getElementById('visitCount').textContent = data.count;
+      if (data && typeof data.total !== 'undefined') {
+        document.getElementById('visitCount').textContent = data.total;
       } else {
         document.getElementById('visitCount').textContent = '?';
       }
