@@ -236,10 +236,18 @@ if (window.innerWidth > 768) {
 
 // Pobierz i wyświetl licznik odwiedzin (visitorbadge.io)
 function updateVisitCounter() {
-  fetch('https://api.visitorbadge.io/api/visitors?path=nozercode-links')
+  fetch('https://api.visitorbadge.io/api/visitors?path=nozercode-links', {
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
     .then(res => res.json())
     .then(data => {
-      document.getElementById('visitCount').textContent = data.count;
+      if (data && typeof data.count !== 'undefined') {
+        document.getElementById('visitCount').textContent = data.count;
+      } else {
+        document.getElementById('visitCount').textContent = '?';
+      }
     })
     .catch(() => {
       document.getElementById('visitCount').textContent = '?';
