@@ -482,3 +482,17 @@
                 transform: translate(-50%, -50%);
             }
         }
+
+        .loader-mobile-muted {
+            color: #e1f7ff;
+            font-size: 14px;
+            margin-top: 12px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .loader-mobile-muted {
+                display: block !important;
+            }
+        }

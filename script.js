@@ -47,14 +47,24 @@
             return videos[Math.floor(Math.random() * videos.length)];
         }
 
+        function isMobile() {
+            return window.innerWidth < 769;
+        }
+
         function activatePage() {
             // Losuj film i ustaw jako źródło
             const randomVideo = getRandomVideo();
             document.querySelector('source[type="video/mp4"]').src = randomVideo;
             videoBg.load();
-            videoBg.muted = false;
+            // Na PC dźwięk włączony, na mobile wyciszony
+            if (isMobile()) {
+                videoBg.muted = true;
+                musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                videoBg.muted = false;
+                musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
             videoBg.play().catch(e => console.log("Playback error:", e));
-            musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
             card.classList.add('active');
         }
 
@@ -86,6 +96,7 @@
         musicControl.addEventListener('click', function() {
             clickSound.currentTime = 0;
             clickSound.play();
+            // Pozwól włączyć dźwięk tylko po kliknięciu
             toggleSound();
         });
 
