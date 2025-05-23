@@ -378,11 +378,62 @@
     to { opacity: 0; }
 }
 
-/* Usuń style popupa */
-.autoplay-overlay, .autoplay-content, .autoplay-button {
-    display: none !important;
+/* Stylizacja overlaya */
+.autoplay-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.96);
+    z-index: 99999;
+    display: none; /* domyślnie ukryty, JS ustawia display:flex */
+    align-items: center;
+    justify-content: center;
+    cursor: auto !important; /* Wymuś domyślny kursor na overlayu */
 }
-        @media (max-width: 480px) {
+.autoplay-overlay.active {
+    display: flex;
+}
+.autoplay-content {
+    background: #181c22;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    padding: 38px 28px 28px 28px;
+    text-align: center;
+    max-width: 90vw;
+    width: 320px;
+}
+.autoplay-content h2 {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    margin-bottom: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.autoplay-content p {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 24px;
+}
+.autoplay-button {
+    padding: 14px 38px;
+    font-size: 1.1rem;
+    border-radius: 40px;
+    border: none;
+    background: var(--accent-color);
+    color: #222;
+    font-weight: 600;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    cursor: pointer !important; /* Wymuś pointer na przycisku */
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: auto;
+}
+.autoplay-button:hover {
+    background: #236bcf;
+    color: var(--accent-color);
+}
+@media (max-width: 480px) {
             .card {
                 width: 90%;
                 padding: 20px 15px;
