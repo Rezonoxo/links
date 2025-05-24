@@ -233,20 +233,19 @@ if (window.innerWidth > 768) {
         cursorOutline.style.opacity = '1';
     });
 }
-
-// Pobierz i wyświetl licznik odwiedzin (visits.deno.dev)
-function updateVisitCounter() {
-  fetch('https://visits.deno.dev/nozercode-links')
-    .then(res => res.json())
-    .then(data => {
-      if (data && typeof data.total !== 'undefined') {
-        document.getElementById('visitCount').textContent = data.total;
-      } else {
-        document.getElementById('visitCount').textContent = '?';
-      }
-    })
-    .catch(() => {
-      document.getElementById('visitCount').textContent = '?';
-    });
-}
-window.addEventListener('DOMContentLoaded', updateVisitCounter);
+document.addEventListener('DOMContentLoaded', function() {
+    const visitCounter = document.getElementById('visitCounter');
+    
+    // Unikalny klucz dla Twojej strony (np. nazwa domeny)
+    const namespace = 'your-github-page';
+    
+    fetch(`https://api.countapi.xyz/hit/${namespace}/visits`)
+        .then(response => response.json())
+        .then(data => {
+            visitCounter.innerHTML = `<i class="fas fa-eye"></i> ${data.value}`;
+        })
+        .catch(error => {
+            console.error('Błąd licznika:', error);
+            visitCounter.innerHTML = `<i class="fas fa-eye"></i> 0`;
+        });
+});

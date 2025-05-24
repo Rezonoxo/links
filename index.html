@@ -6,6 +6,15 @@
     <title>Nozer | Links</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+        <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZKNP7QEF8V"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZKNP7QEF8V');
+</script>
 </head>
 <body>
     <!-- ================= KONFIGURACJA ================= -->    <script>
@@ -88,8 +97,19 @@
             <i class="fas fa-volume-mute"></i>
         </button>
         <div class="visit-counter" id="visitCounter" title="Liczba odwiedzin">
-            <i class="fas fa-eye"></i> <span id="visitCount">...</span>
-        </div>
+    <i class="fas fa-eye"></i>
+    <span id="visitCount">0</span>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const visitCounter = document.getElementById('visitCounter');
+    let count = localStorage.getItem('pageVisits') || 0;
+    count = parseInt(count) + 1;
+    localStorage.setItem('pageVisits', count);
+    visitCounter.innerHTML = `<i class="fas fa-eye"></i> ${count}`;
+});
+</script>
 
         <div class="profile">
             <img src="" alt="Profile" class="profile-img" id="profileImg">
@@ -109,15 +129,6 @@
     </div>
 
     <audio id="clickSound" src="click.wav" preload="auto"></audio>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZKNP7QEF8V"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-ZKNP7QEF8V');
-</script>
     <script src="script.js"></script>
 </body>
 </html>
