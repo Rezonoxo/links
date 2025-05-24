@@ -97,17 +97,17 @@
             <i class="fas fa-volume-mute"></i>
         </button>
         <div class="visit-counter" id="visitCounter" title="Liczba odwiedzin">
-    <i class="fas fa-eye"></i>
-    <span id="visitCount">0</span>
-</div>
+            <i class="fas fa-eye"></i>
+            <span id="visitCount">0</span>
+        </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const visitCounter = document.getElementById('visitCounter');
+    const visitCount = document.getElementById('visitCount');
     let count = localStorage.getItem('pageVisits') || 0;
     count = parseInt(count) + 1;
     localStorage.setItem('pageVisits', count);
-    visitCounter.innerHTML = `<i class="fas fa-eye"></i> ${count}`;
+    visitCount.textContent = count;
 });
 </script>
 

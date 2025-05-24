@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const visitCounter = document.getElementById('visitCounter');
     
     // Unikalny klucz dla Twojej strony (np. nazwa domeny)
-    const namespace = 'your-github-page';
+    const namespace = 'nozercodelinks';
     
     fetch(`https://api.countapi.xyz/hit/${namespace}/visits`)
         .then(response => response.json())
