@@ -23,19 +23,19 @@ function getOverlayContent() {
   if (lang === 'pl') {
     return `
       <div class="autoplay-content">
-        <h2>Rozpocznij doświadczenie</h2>
+        <h2>Wstępna informacja</h2>
         <p>Strona zawiera efekty dźwiękowe i wizualne.<br>Kliknij, aby rozpocząć.</p>
         <button class="autoplay-button"><i class="fas fa-play"></i> Start</button>
-        <div style="font-size:12px;color:#bbb;margin-top:12px;">Dźwięk zostanie włączony po kliknięciu. Możesz go wyciszyć w dowolnym momencie.</div>
+        <div style="font-size:12px;color:#bbb;margin-top:12px;">Dźwięk zostanie włączony po kliknięciu. Możesz go wyciszyć w dowolnym momencie przyciskiem w prawym górnym rogu karty.</div>
       </div>
     `;
   } else {
     return `
       <div class="autoplay-content">
-        <h2>Start the experience</h2>
+        <h2>Information</h2>
         <p>This site contains sound and visual effects.<br>Click to continue.</p>
         <button class="autoplay-button"><i class="fas fa-play"></i> Start</button>
-        <div style="font-size:12px;color:#bbb;margin-top:12px;">Sound will be enabled after clicking. You can mute it at any time.</div>
+        <div style="font-size:12px;color:#bbb;margin-top:12px;">Sound will be enabled after clicking. You can mute it at any time by the mute button in right upper corner of card.</div>
       </div>
     `;
   }
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const visitCounter = document.getElementById('visitCounter');
     
     // Unikalny klucz dla Twojej strony (np. nazwa domeny)
-    const namespace = 'nozercodelinks';
+    const namespace = 'tasdlakwdsifanwnasdusnan';
     
     fetch(`https://api.countapi.xyz/hit/${namespace}/visits`)
         .then(response => response.json())
